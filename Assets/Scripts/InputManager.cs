@@ -30,11 +30,12 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         Vector2 moveDir = onFoot.Movement.ReadValue<Vector2>();
-        motor.ProcessMove(moveDir);
+        bool isSprinting = onFoot.Sprint.IsPressed();
+        // Check if sprint is held
+        motor.ProcessMove(moveDir, isSprinting);
 
         Vector2 lookDir = onFoot.Look.ReadValue<Vector2>();
         _look.ProcessLook(lookDir);
-
     }
 
     private void OnEnable()

@@ -8,6 +8,7 @@ public class PlayerMotor : MonoBehaviour
     private CharacterController _controller;
     private Vector3 _velocity;
     public float _speed = 5f;
+    public float _sprintSpeed = 10f;
 
     private bool _isGrounded = false;
     public float _gravity = -9.8f;
@@ -24,11 +25,12 @@ public class PlayerMotor : MonoBehaviour
         _isGrounded = _controller.isGrounded;
     }
 
-    public void ProcessMove(Vector2 input)
+    public void ProcessMove(Vector2 input, bool sprint = false)
     {
-        // Apply movement
+        // Apply horizontal movement
         Vector3 translation = new Vector3(input.x, 0, input.y);
-        _controller.Move(transform.TransformDirection(translation) * _speed * Time.deltaTime);
+        float curSpeed = sprint ? _sprintSpeed : _speed;
+        _controller.Move(transform.TransformDirection(translation) * curSpeed * Time.deltaTime);
 
         _velocity.y += _gravity * Time.deltaTime;
 
