@@ -193,7 +193,8 @@ public class ScoopCommand : ICommand
 
 public class HoldCommand : ICommand
 {
-    public HoldCommand(ItemContext _context) : base(typeof(EmptyItem), typeof(Item), _context)
+
+    public HoldCommand(ItemContext _context) : base(typeof(EmptyItem), typeof(Interactable), _context)
     {
     }
 
@@ -203,27 +204,33 @@ public class HoldCommand : ICommand
     }
 }
 
-public class Item
+public class Interactable
 {
-
+    
 }
 
 public class EmptyItem
 {
 
 }
-public class Scooper : Item
+public class Scooper : Interactable
 {
     public float capacity;
 }
 
-public class FoodSource : Item
+public class FoodSource : Interactable
 {
 
 }
 
+// Note: Make this a singleton because item refernces are always gonna be the same
 public class ItemContext
 {
-    public Item _itemHeld { get; set; }
-    public Item _itemLookingAt { get; set; }
+    public Interactable _itemHeld { get; set; }
+    public Interactable _itemLookingAt { get; set; }
+}
+
+public class Pickupable : Interactable
+{
+    
 }
