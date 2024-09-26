@@ -25,4 +25,30 @@ public class PlayerLook : MonoBehaviour
         float yTranslate = mouseX * Time.deltaTime * ySensitivity;
         transform.Rotate(new Vector3(0, yTranslate, 0));
     }
+
+    private void Update()
+    {
+        UpdateLookedAtItem();
+    }
+
+    private void UpdateLookedAtItem()
+    {
+        RaycastHit hit;
+
+        Vector3 pos = Camera.main.transform.position;
+        Vector3 dir = Camera.main.transform.forward;
+        Physics.Raycast(pos, dir, out hit, 5);
+
+        GameObject potentialInteractable = hit.collider?.gameObject;
+        
+        if (potentialInteractable && potentialInteractable.TryGetComponent<Interactable>(out _))
+        {
+            ItemContext.Instance._itemLookingAt = potentialInteractable;
+        } else
+        {
+            ItemContext.Instance._itemLookingAt = null;
+        }
+
+    }
+
 }

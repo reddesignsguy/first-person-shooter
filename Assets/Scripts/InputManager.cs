@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Progress;
 
 public class InputManager : MonoBehaviour
 {
@@ -24,13 +25,33 @@ public class InputManager : MonoBehaviour
         onFoot.Jump.performed += ctx => motor.Jump();
     }
 
+    List<ICommand> commands; // TODO -- testing. Move to a singleton
+    List<ICommand> validCommands;
+    GameObject sphere;
+    GameObject heldItem;
+    CommandGetter commandGetter;
+
     private void Start()
     {
         Cursor.visible = false;
+
+        commandGetter = new CommandGetter();
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        PlayerItemHolder holder = player.GetComponent<PlayerItemHolder>();
+
+        ItemContext.Instance._itemLookingAt = GameObject.Find("Sphere");
+
+        validCommands = commandGetter.GetAvailableActions();
+
     }
 
     private void Update()
     {
+        validCommands = commandGetter.GetAvailableActions();
+        foreach (ICommand command in validCommands)
+            Debug.Log(command);
+
         Vector2 moveDir = onFoot.Movement.ReadValue<Vector2>();
         bool isSprinting = onFoot.Sprint.IsPressed();
         // Check if sprint is held
@@ -38,6 +59,12 @@ public class InputManager : MonoBehaviour
 
         Vector2 lookDir = onFoot.Look.ReadValue<Vector2>();
         _look.ProcessLook(lookDir);
+
+        if (Input.GetKey(KeyCode.E))
+        {
+            ICommand command = validCommands[0];
+            command.Execute(ItemContext.Instance._itemHeld, ItemContext.Instance._itemLookingAt);
+        }
     }
 
     private void OnEnable()
@@ -51,186 +78,153 @@ public class InputManager : MonoBehaviour
     }
 }
 
-
-public class CommandsManager
+public class CommandGetter
 {
-    // DI Held
-    // DI LookingAt
 
-    List<ICommand> commands;
-    ItemContext _context;
-    public CommandsManager()
+    public List<ICommand> GetAvailableActions()
     {
-        _context = new ItemContext();
-        CommandValidator validator = new CommandValidator(_context);
+        List<ICommand> commands = new List<ICommand>();
 
-        _context._itemHeld = new Scooper();
-        _context._itemLookingAt = new FoodSource();
+        if (AreComponentsPresent<Scooper, FoodSource>())
+        {
+            commands.Add(new ScoopCommand());
+        }
 
-        commands = new List<ICommand>();
-
-        ScoopCommand scoop = new ScoopCommand(_context);
-        commands.Add(scoop);
-
-        HoldCommand hold = new HoldCommand(_context);
-        commands.Add(hold);
-
+        if (IsHandEmpty() && IsComponentPresentInItemLookingAt<Holdable>())
+        {
+            commands.Add(new HoldCommand());
+        }
+        
+        return commands;
     }
 
-    public void GetCommands()
+    bool AreComponentsPresent<T1, T2>()
+        where T1 : Interactable
+        where T2 : Interactable
     {
+        GameObject itemHeld = ItemContext.Instance._itemHeld;
+        GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
 
-        List<ICommand> validCommands = new List<ICommand>();
+        return itemHeld != null && itemHeld.TryGetComponent(out T1 _) && itemLookingAt.TryGetComponent(out T2 _);
+    }
 
-        foreach (ICommand command in commands)
-        {
-            if (CommandValidator.CommandIsValid(command))
-            {
-                validCommands.Add(command);
-            }
-            else
-            {
-                Console.WriteLine("FAILED TO ADD COMMAND: " + command);
-            }
-            Console.WriteLine("-------------------");
-        }
-        foreach (ICommand command in validCommands)
-        {
-            command.Execute();
-        }
+    bool IsComponentPresentInItemLookingAt<T1>()
+        where T1 : Component
+    {
+        GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
+
+        return itemLookingAt != null && itemLookingAt.TryGetComponent(out T1 _);
+    }
+
+    bool IsHandEmpty()
+    {
+        GameObject itemHeld = ItemContext.Instance._itemHeld;
+        return itemHeld == null;
     }
 }
 
-public class CommandValidator
+public interface ICommand
 {
-
-    public static ItemContext _context;
-
-    public CommandValidator(ItemContext context)
-    {
-        _context = context;
-    }
-
-    public static bool CommandIsValid(ICommand command)
-    {
-
-        Type itemInHand = _context._itemHeld.GetType();
-        Type itemLookAt = _context._itemLookingAt.GetType();
-        Console.WriteLine(itemInHand);
-        Console.WriteLine(itemLookAt);
-
-        Type requiredHand = command._requirementsToExecute.TItemInHand;
-        Type requiredLookAt = command._requirementsToExecute.TItemLookingAt;
-        Console.WriteLine(requiredHand);
-        Console.WriteLine(requiredLookAt);
-
-        bool canUse = requiredHand.IsAssignableFrom(itemInHand) && requiredLookAt.IsAssignableFrom(itemLookAt);
-        if (canUse)
-        {
-            return true;
-        }
-
-        Console.WriteLine("ERROR: Cannot use");
-        return false;
-    }
-}
-
-public class CommandRequirements
-{
-
-    public Type TItemInHand;
-    public Type TItemLookingAt;
-
-    public CommandRequirements(Type TItemInHand, Type TItemLookingAt)
-    {
-        this.TItemInHand = TItemInHand;
-        this.TItemLookingAt = TItemLookingAt;
-    }
-
-}
-
-public abstract class ICommand
-{
-    // Items required for this command
-    public CommandRequirements _requirementsToExecute;
-    private ItemContext _context; // Used explicitly for Execute behavior
-
-    public ICommand(Type TItemInHand, Type TItemLookingAt, ItemContext _context)
-    {
-        this._context = _context;
-
-        _requirementsToExecute = new CommandRequirements(TItemInHand, TItemLookingAt);
-    }
-
-    public void Execute()
-    {
-
-        // Extra layer of defense
-        Console.WriteLine("Executing!");
-        if (!CommandValidator.CommandIsValid(this))
-        {
-            return;
-        }
-        ExecutionBehaviorOverrideMe();
-    }
-
-    protected abstract void ExecutionBehaviorOverrideMe();
-    //public virtual void Execute(); // In base: Do a verification check again with the item in hand  and item looking at
+    public void Execute(GameObject item1, GameObject item2);
 }
 
 public class ScoopCommand : ICommand
 {
-    public ScoopCommand(ItemContext _context) : base(typeof(Scooper), typeof(FoodSource), _context)
+    public void Execute(GameObject item1, GameObject item2)
     {
-    }
-
-    protected override void ExecutionBehaviorOverrideMe()
-    {
-        Console.WriteLine("scopoping!");
+        if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out FoodSource foodSource))
+        {
+            scooper.Scoop(foodSource._ingredient);
+        } else
+        {
+            Debug.Log("Scoop command was assigned to player incorrectly");
+        }
     }
 }
-
 
 public class HoldCommand : ICommand
 {
 
-    public HoldCommand(ItemContext _context) : base(typeof(EmptyItem), typeof(Interactable), _context)
+    public void Execute(GameObject item1, GameObject item2)
     {
-    }
+        if (item1 == null && item2.TryGetComponent(out Holdable holdable))
+        {
 
-    protected override void ExecutionBehaviorOverrideMe()
-    {
-        Console.WriteLine("holding!");
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+            PlayerItemHolder holder = player?.GetComponent<PlayerItemHolder>();
+
+            if (holder == null)
+            {
+                return;
+            }
+
+            
+            holdable.transform.parent = holder.equipPosition;
+            holdable.transform.localPosition = new Vector3(0, 0, 0);
+        } else
+        {
+            Debug.Log("Hold command was assigned to player incorrectly");
+        }
     }
 }
 
-public class Interactable
+
+public class Interactable : MonoBehaviour
 {
     
 }
 
-public class EmptyItem
-{
-
-}
 public class Scooper : Interactable
 {
-    public float capacity;
+    public float _capacity;
+    public Ingredient _ingredient;
+
+    public void Scoop(Ingredient ingredient)
+    {
+        // We can only scoop if we are empty
+        if (!IngredientIsAccepted(ingredient)) {
+            return;
+        }
+
+        _ingredient = ingredient;
+    }
+
+    public Ingredient Pour()
+    {
+        Ingredient temp = _ingredient;
+        temp = Ingredient.None;
+
+        return temp;
+    }
+
+    public bool IngredientIsAccepted(Ingredient i)
+    {
+        return _ingredient == i;
+    }
+
+}
+
+public enum Ingredient
+{
+    None,
+    Flour,
+    Sugar
 }
 
 public class FoodSource : Interactable
 {
-
+    public Ingredient _ingredient;
 }
 
-// Note: Make this a singleton because item refernces are always gonna be the same
-public class ItemContext
+public class Manager
 {
-    public Interactable _itemHeld { get; set; }
-    public Interactable _itemLookingAt { get; set; }
-}
+    void Main()
+    {
+        List<ICommand> commands = new List<ICommand>();
+        foreach (ICommand command in commands)
+        {
 
-public class Pickupable : Interactable
-{
-    
+        }
+    }
 }

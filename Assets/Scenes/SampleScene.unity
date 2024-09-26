@@ -227,6 +227,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &376409896 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 458668203717559663, guid: bf40a2dc6bc884bc0b0b20ca5373bfbe, type: 3}
+  m_PrefabInstance: {fileID: 5486900545576370693}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &465781348
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +354,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSensitivity: 80
   ySensitivity: 80
+--- !u!114 &519859562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519859550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88badfd2d1bac41aa8d037bcfedb495f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equipPosition: {fileID: 869416870}
+  holdable: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,6 +530,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &869416869
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 869416870}
+  m_Layer: 0
+  m_Name: EquipPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &869416870
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 869416869}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.34800002, y: -0.32, z: 0.9430001}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 376409896}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1242158864
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,6 +573,7 @@ GameObject:
   - component: {fileID: 1242158867}
   - component: {fileID: 1242158866}
   - component: {fileID: 1242158865}
+  - component: {fileID: 1242158869}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -611,11 +662,23 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.17082539, y: 0.66, z: 4.01}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.23102, y: 0.23102, z: 0.23102}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1242158869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242158864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 839bdc80302a7412390442bffe834fb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2107305088
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,7 +835,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 458668203717559663, guid: bf40a2dc6bc884bc0b0b20ca5373bfbe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 869416870}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6716217290281651898, guid: bf40a2dc6bc884bc0b0b20ca5373bfbe, type: 3}
       insertIndex: -1
@@ -783,6 +849,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6716217290281651898, guid: bf40a2dc6bc884bc0b0b20ca5373bfbe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 519859557}
+    - targetCorrespondingSourceObject: {fileID: 6716217290281651898, guid: bf40a2dc6bc884bc0b0b20ca5373bfbe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 519859562}
   m_SourcePrefab: {fileID: 100100000, guid: bf40a2dc6bc884bc0b0b20ca5373bfbe, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
