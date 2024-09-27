@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using static UnityEditor.Progress;
 
 public class InputManager : MonoBehaviour
 {
@@ -25,8 +24,8 @@ public class InputManager : MonoBehaviour
         onFoot.Jump.performed += ctx => motor.Jump();
     }
 
-    List<ICommand> commands; // TODO -- testing. Move to a singleton
-    List<ICommand> validCommands;
+    List<IAction> commands; // TODO -- testing. Move to a singleton
+    List<IAction> validCommands;
     GameObject sphere;
     GameObject heldItem;
     CommandGetter commandGetter;
@@ -49,7 +48,7 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         validCommands = commandGetter.GetAvailableActions();
-        foreach (ICommand command in validCommands)
+        foreach (IAction command in validCommands)
             Debug.Log(command);
 
         Vector2 moveDir = onFoot.Movement.ReadValue<Vector2>();
@@ -62,7 +61,7 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKey(KeyCode.E))
         {
-            ICommand command = validCommands.Count > 0 ? validCommands[0] : null;
+            IAction command = validCommands.Count > 0 ? validCommands[0] : null;
             command?.Execute(ItemContext.Instance._itemHeld, ItemContext.Instance._itemLookingAt);
         }
     }
@@ -81,18 +80,23 @@ public class InputManager : MonoBehaviour
 public class CommandGetter
 {
 
-    public List<ICommand> GetAvailableActions()
+    public List<IAction> GetAvailableActions()
     {
-        List<ICommand> commands = new List<ICommand>();
+        List<IAction> commands = new List<IAction>();
 
         if (AreComponentsPresent<Scooper, FoodSource>())
         {
-            commands.Add(new ScoopCommand());
+            commands.Add(new ScoopAction());
+        }
+
+        if (AreComponentsPresent<Scooper, IngredientReceiver>())
+        {
+            commands.Add(new PourAction());
         }
 
         if (IsHandEmpty() && IsComponentPresentInItemLookingAt<Holdable>())
         {
-            commands.Add(new HoldCommand());
+            commands.Add(new HoldAction());
         }
         
         return commands;
@@ -123,12 +127,12 @@ public class CommandGetter
     }
 }
 
-public interface ICommand
+public interface IAction
 {
     public void Execute(GameObject item1, GameObject item2);
 }
 
-public class ScoopCommand : ICommand
+public class ScoopAction : IAction
 {
     public void Execute(GameObject item1, GameObject item2)
     {
@@ -144,9 +148,40 @@ public class ScoopCommand : ICommand
             Debug.Log("Scoop command was assigned to player incorrectly");
         }
     }
+
 }
 
-public class HoldCommand : ICommand
+
+public class PourAction : IAction
+{
+    public void Execute(GameObject item1, GameObject item2)
+    {
+        if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out IngredientReceiver receiver))
+        {
+            Debug.Log("Pouring");
+            // Pour all of the ingredient in scooper into the receiver
+            UpdateReceiver(scooper._ingredient, scooper._capacity, receiver);
+            UpdateScooper(scooper);
+        }
+        else
+        {
+            Debug.Log("Pour command was assigned to player incorrectly");
+        }
+    }
+
+    private void UpdateScooper(Scooper scooper)
+    {
+        scooper._ingredient = Ingredient.None;
+    }
+
+    private void UpdateReceiver(Ingredient i, float amount, IngredientReceiver receiver)
+    {
+        Dictionary<Ingredient, float> ingredientQuantities = receiver.ingredientQuantities;
+        ingredientQuantities[i] = ingredientQuantities.ContainsKey(i) ? ingredientQuantities[i] + amount : 1;
+    }
+}
+
+public class HoldAction : IAction
 {
 
     public void Execute(GameObject item1, GameObject item2)
@@ -192,17 +227,4 @@ public enum Ingredient
     None,
     Flour,
     Sugar
-}
-
-
-public class Manager
-{
-    void Main()
-    {
-        List<ICommand> commands = new List<ICommand>();
-        foreach (ICommand command in commands)
-        {
-
-        }
-    }
 }
