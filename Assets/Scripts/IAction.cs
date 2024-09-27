@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public interface IAction
+public abstract class IAction
 {
-    public void Execute(GameObject item1, GameObject item2);
+    public abstract void Execute(GameObject item1, GameObject item2);
 }
 
 public class ScoopAction : IAction
 {
-    public void Execute(GameObject item1, GameObject item2)
+    public override void Execute(GameObject item1, GameObject item2)
     {
         if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out FoodSource foodSource))
         {
@@ -27,7 +27,7 @@ public class ScoopAction : IAction
 
 public class PourAction : IAction
 {
-    public void Execute(GameObject item1, GameObject item2)
+    public override void Execute(GameObject item1, GameObject item2)
     {
         if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out IngredientReceiver receiver))
         {
@@ -50,7 +50,7 @@ public class PourAction : IAction
 public class HoldAction : IAction
 {
 
-    public void Execute(GameObject item1, GameObject item2)
+    public override void Execute(GameObject item1, GameObject item2)
     {
         if (item1 == null && item2.TryGetComponent(out Holdable holdable))
         {

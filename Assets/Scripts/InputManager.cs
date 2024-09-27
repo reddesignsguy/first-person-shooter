@@ -24,22 +24,14 @@ public class InputManager : MonoBehaviour
         onFoot.Jump.performed += ctx => motor.Jump();
     }
 
-    List<IAction> commands; // TODO -- testing. Move to a singleton
     List<IAction> validCommands;
-    GameObject sphere;
-    GameObject heldItem;
-    CommandGetter commandGetter;
+    ActionManager commandGetter;
 
     private void Start()
     {
         Cursor.visible = false;
 
-        commandGetter = new CommandGetter();
-
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        PlayerItemHolder holder = player.GetComponent<PlayerItemHolder>();
-
-        ItemContext.Instance._itemLookingAt = GameObject.Find("Sphere");
+        commandGetter = new ActionManager();
 
         validCommands = commandGetter.GetAvailableActions();
 
@@ -47,8 +39,6 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        validCommands = commandGetter.GetAvailableActions();
-
         Vector2 moveDir = onFoot.Movement.ReadValue<Vector2>();
         bool isSprinting = onFoot.Sprint.IsPressed();
         // Check if sprint is held
@@ -75,9 +65,8 @@ public class InputManager : MonoBehaviour
     }
 }
 
-public class CommandGetter
+public class ActionManager
 {
-
     public List<IAction> GetAvailableActions()
     {
         List<IAction> commands = new List<IAction>();
