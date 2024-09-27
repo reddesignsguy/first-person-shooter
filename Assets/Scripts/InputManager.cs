@@ -62,8 +62,8 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKey(KeyCode.E))
         {
-            ICommand command = validCommands[0];
-            command.Execute(ItemContext.Instance._itemHeld, ItemContext.Instance._itemLookingAt);
+            ICommand command = validCommands.Count > 0 ? validCommands[0] : null;
+            command?.Execute(ItemContext.Instance._itemHeld, ItemContext.Instance._itemLookingAt);
         }
     }
 
@@ -181,36 +181,6 @@ public class HoldCommand : ICommand
 public class Interactable : MonoBehaviour
 {
     
-}
-
-public class Scooper : Interactable
-{
-    public float _capacity;
-    public Ingredient _ingredient;
-
-    public void Scoop(Ingredient ingredient)
-    {
-        // We can only scoop if we are empty
-        if (!IngredientIsAccepted(ingredient)) {
-            return;
-        }
-
-        _ingredient = ingredient;
-    }
-
-    public Ingredient Pour()
-    {
-        Ingredient temp = _ingredient;
-        temp = Ingredient.None;
-
-        return temp;
-    }
-
-    public bool IngredientIsAccepted(Ingredient i)
-    {
-        return _ingredient == i;
-    }
-
 }
 
 public enum Ingredient

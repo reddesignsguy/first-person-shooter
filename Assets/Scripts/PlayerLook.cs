@@ -9,6 +9,10 @@ public class PlayerLook : MonoBehaviour
     public float xSensitivity = 80f;
     public float ySensitivity = 80f;
 
+    private void Update()
+    {
+        UpdateLookedAtItem();
+    }
 
     public void ProcessLook (Vector2 direction)
     {
@@ -26,10 +30,6 @@ public class PlayerLook : MonoBehaviour
         transform.Rotate(new Vector3(0, yTranslate, 0));
     }
 
-    private void Update()
-    {
-        UpdateLookedAtItem();
-    }
 
     private void UpdateLookedAtItem()
     {
@@ -40,7 +40,8 @@ public class PlayerLook : MonoBehaviour
         Physics.Raycast(pos, dir, out hit, 5);
 
         GameObject potentialInteractable = hit.collider?.gameObject;
-        
+
+        // Raycast for interactable objects
         if (potentialInteractable && potentialInteractable.TryGetComponent<Interactable>(out _))
         {
             ItemContext.Instance._itemLookingAt = potentialInteractable;
