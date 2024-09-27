@@ -24,16 +24,9 @@ public class InputManager : MonoBehaviour
         onFoot.Jump.performed += ctx => motor.Jump();
     }
 
-    List<IAction> validCommands;
-    ActionManager commandGetter;
-
     private void Start()
     {
         Cursor.visible = false;
-
-        commandGetter = new ActionManager();
-
-        validCommands = commandGetter.GetAvailableActions();
 
     }
 

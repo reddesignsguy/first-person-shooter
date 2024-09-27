@@ -2,8 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionManager
+public class ActionManager : MonoBehaviour
 {
+    private GameObject lastItemHeld;
+    private GameObject lastItemLookingAt;
+    public List<IAction> actions { get; private set; }
+
+    private void Update()
+    {
+        // Null check
+        if (!lastItemHeld || !lastItemLookingAt)
+        {
+            lastItemHeld = ItemContext.Instance._itemHeld;
+            lastItemLookingAt = ItemContext.Instance._itemLookingAt;
+        }
+
+        bool itemContextChanged = lastItemHeld != ItemContext.Instance._itemHeld || lastItemLookingAt != ItemContext.Instance._itemLookingAt;
+        if (itemContextChanged)
+        {
+            actions = GetAvailableActions();
+        }
+    }
 
     /*
      * Returns a list of available actions the user can make given the item held and item being looked at inside the ItemContext.
@@ -12,7 +31,7 @@ public class ActionManager
      * pair of items in the context of gameplay design, however, because all actions check if the components needed are present in the ItemContext,
      * incorrect action assignments will not lead to run-time errors.
      */
-    public List<IAction> GetAvailableActions()
+    private List<IAction> GetAvailableActions()
     {
         List<IAction> commands = new List<IAction>();
 
