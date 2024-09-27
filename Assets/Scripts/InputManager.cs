@@ -105,7 +105,7 @@ public class CommandGetter
         GameObject itemHeld = ItemContext.Instance._itemHeld;
         GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
 
-        return itemHeld != null && itemHeld.TryGetComponent(out T1 _) && itemLookingAt.TryGetComponent(out T2 _);
+        return itemHeld != null && itemHeld.TryGetComponent(out T1 _) && itemLookingAt != null && itemLookingAt.TryGetComponent(out T2 _);
     }
 
     bool IsComponentPresentInItemLookingAt<T1>()
@@ -134,7 +134,11 @@ public class ScoopCommand : ICommand
     {
         if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out FoodSource foodSource))
         {
-            scooper.Scoop(foodSource._ingredient);
+            // Scooper can only scoop if empty
+            if (scooper._ingredient == Ingredient.None)
+            {
+                scooper._ingredient = foodSource._ingredient;
+            }
         } else
         {
             Debug.Log("Scoop command was assigned to player incorrectly");
@@ -190,10 +194,6 @@ public enum Ingredient
     Sugar
 }
 
-public class FoodSource : Interactable
-{
-    public Ingredient _ingredient;
-}
 
 public class Manager
 {

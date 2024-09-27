@@ -7,17 +7,6 @@ public class Scooper : Interactable
     public float _capacity;
     public Ingredient _ingredient;
 
-    public void Scoop(Ingredient ingredient)
-    {
-        // We can only scoop if we are empty
-        if (!IngredientIsAccepted(ingredient))
-        {
-            return;
-        }
-
-        _ingredient = ingredient;
-    }
-
     public Ingredient Pour()
     {
         Ingredient temp = _ingredient;
