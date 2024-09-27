@@ -66,7 +66,6 @@ public class InputManager : MonoBehaviour
 }
 
 
-
 public class Interactable : MonoBehaviour
 {
     

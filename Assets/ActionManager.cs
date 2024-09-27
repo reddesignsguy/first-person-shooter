@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class ActionManager
 {
-    
+
+    /*
+     * Returns a list of available actions the user can make given the item held and item being looked at inside the ItemContext.
+     * ALL possible actions the player can make are to be given here. The actions available to the player is based on 
+     * MANUALLY DEFINED component types that must be inherited by the items. This may cause an incorrect action to be given for a particular
+     * pair of items in the context of gameplay design, however, because all actions check if the components needed are present in the ItemContext,
+     * incorrect action assignments will not lead to run-time errors.
+     */
     public List<IAction> GetAvailableActions()
     {
         List<IAction> commands = new List<IAction>();
