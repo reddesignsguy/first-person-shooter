@@ -48,8 +48,6 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         validCommands = commandGetter.GetAvailableActions();
-        foreach (IAction command in validCommands)
-            Debug.Log(command);
 
         Vector2 moveDir = onFoot.Movement.ReadValue<Vector2>();
         bool isSprinting = onFoot.Sprint.IsPressed();

@@ -13,9 +13,9 @@ public class ScoopAction : IAction
         if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out FoodSource foodSource))
         {
             // Scooper can only scoop if empty
-            if (scooper._ingredient == Ingredient.None)
+            if (scooper.IsEmpty())
             {
-                scooper._ingredient = foodSource._ingredient;
+                scooper.Fill(foodSource._ingredient);
             }
         }
         else
@@ -23,7 +23,6 @@ public class ScoopAction : IAction
             Debug.Log("Scoop command was assigned to player incorrectly");
         }
     }
-
 }
 
 public class PourAction : IAction
@@ -32,32 +31,19 @@ public class PourAction : IAction
     {
         if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out IngredientReceiver receiver))
         {
-            if (scooper._ingredient == Ingredient.None)
+            if (scooper.IsEmpty())
             {
-                Debug.Log("Trying to pour nothing");
                 return;
-            }    
+            }
 
-            Debug.Log("Pouring");
             // Pour all of the ingredient in scooper into the receiver
-            UpdateReceiver(scooper._ingredient, scooper._capacity, receiver);
-            UpdateScooper(scooper);
+            receiver.Add(scooper._ingredient, scooper.capacity);
+            scooper.MakeEmpty();
         }
         else
         {
             Debug.Log("Pour command was assigned to player incorrectly");
         }
-    }
-
-    private void UpdateScooper(Scooper scooper)
-    {
-        scooper._ingredient = Ingredient.None;
-    }
-
-    private void UpdateReceiver(Ingredient i, float amount, IngredientReceiver receiver)
-    {
-        Dictionary<Ingredient, float> ingredientQuantities = receiver.ingredientQuantities;
-        ingredientQuantities[i] = ingredientQuantities.ContainsKey(i) ? ingredientQuantities[i] + amount : amount;
     }
 }
 
