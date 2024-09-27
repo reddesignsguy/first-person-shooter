@@ -5,5 +5,4 @@ using UnityEngine;
 public class PlayerItemHolder : MonoBehaviour
 {
     public Transform equipPosition;
-    public GameObject holdable;
 }

@@ -151,21 +151,29 @@ public class HoldCommand : ICommand
         {
 
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-
             PlayerItemHolder holder = player?.GetComponent<PlayerItemHolder>();
-
             if (holder == null)
             {
                 return;
             }
 
-            
-            holdable.transform.parent = holder.equipPosition;
-            holdable.transform.localPosition = new Vector3(0, 0, 0);
+            AttachToPlayerHolder(holdable, holder);
+            UpdateHeldItemState(item2);
         } else
         {
             Debug.Log("Hold command was assigned to player incorrectly");
         }
+    }
+
+    private void AttachToPlayerHolder(Holdable holdable, PlayerItemHolder holder)
+    {
+        holdable.transform.parent = holder.equipPosition;
+        holdable.transform.localPosition = new Vector3(0, 0, 0);
+    }
+
+    private void UpdateHeldItemState(GameObject item)
+    {
+        ItemContext.Instance._itemHeld = item;
     }
 }
 
