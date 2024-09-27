@@ -26,13 +26,18 @@ public class ScoopAction : IAction
 
 }
 
-
 public class PourAction : IAction
 {
     public void Execute(GameObject item1, GameObject item2)
     {
         if (item1.TryGetComponent(out Scooper scooper) && item2.TryGetComponent(out IngredientReceiver receiver))
         {
+            if (scooper._ingredient == Ingredient.None)
+            {
+                Debug.Log("Trying to pour nothing");
+                return;
+            }    
+
             Debug.Log("Pouring");
             // Pour all of the ingredient in scooper into the receiver
             UpdateReceiver(scooper._ingredient, scooper._capacity, receiver);
@@ -52,7 +57,7 @@ public class PourAction : IAction
     private void UpdateReceiver(Ingredient i, float amount, IngredientReceiver receiver)
     {
         Dictionary<Ingredient, float> ingredientQuantities = receiver.ingredientQuantities;
-        ingredientQuantities[i] = ingredientQuantities.ContainsKey(i) ? ingredientQuantities[i] + amount : 1;
+        ingredientQuantities[i] = ingredientQuantities.ContainsKey(i) ? ingredientQuantities[i] + amount : amount;
     }
 }
 
