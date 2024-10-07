@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-
+    private ActionManager actionManager;
     private PlayerMotor motor;
     private PlayerLook _look;
     private PlayerInput playerInput;
@@ -20,6 +20,7 @@ public class InputManager : MonoBehaviour
         onFoot = playerInput.OnFoot;
         motor = GetComponent <PlayerMotor>();
         _look = GetComponent<PlayerLook>();
+        actionManager = GetComponent<ActionManager>();
 
         onFoot.Jump.performed += ctx => motor.Jump();
     }
@@ -42,8 +43,7 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKey(KeyCode.E))
         {
-            IAction command = validCommands.Count > 0 ? validCommands[0] : null;
-            command?.Execute(ItemContext.Instance._itemHeld, ItemContext.Instance._itemLookingAt);
+            actionManager.ExecuteAction(0);
         }
     }
 

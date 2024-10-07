@@ -2,26 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public struct ActionData
+{
+    public IAction Action { get; private set; }
+    public ScriptableObject ActionSuggestion { get; private set; }
+
+    // Constructor
+    public ActionData(IAction action, ScriptableObject actionSuggestion)
+    {
+        Action = action;
+        ActionSuggestion = actionSuggestion;
+    }
+}
+
 public class ActionManager : MonoBehaviour
 {
+
     private GameObject lastItemHeld;
     private GameObject lastItemLookingAt;
-    public List<IAction> actions { get; private set; }
+    public List<IAction> actions { get; private set; } // TODO - replace with action data
+
+    // TODO -- in the works
+    List<ActionData> actionData;
+
+    private void Awake()
+    {
+        actions = new List<IAction>();
+        actionData = new List<ActionData>();
+    }
 
     private void Update()
     {
-        // Null check
-        if (!lastItemHeld || !lastItemLookingAt)
-        {
-            lastItemHeld = ItemContext.Instance._itemHeld;
-            lastItemLookingAt = ItemContext.Instance._itemLookingAt;
-        }
-
         bool itemContextChanged = lastItemHeld != ItemContext.Instance._itemHeld || lastItemLookingAt != ItemContext.Instance._itemLookingAt;
         if (itemContextChanged)
         {
             actions = GetAvailableActions();
         }
+
+        lastItemHeld = ItemContext.Instance._itemHeld;
+        lastItemLookingAt = ItemContext.Instance._itemLookingAt;
+    }
+
+    public void ExecuteAction(int actionIndex)
+    {
+        if (actions.Count <= actionIndex)
+        {
+            return;
+        }
+
+        GameObject itemHeld = ItemContext.Instance._itemHeld;
+        GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
+        actions[actionIndex].Execute(itemHeld, itemLookingAt);
     }
 
     /*
