@@ -74,8 +74,8 @@ public class HoldAction : IAction
     private void AttachToPlayerHolder(Holdable holdable, PlayerItemHolder holder)
     {
         holdable.transform.parent = holder.equipPosition;
-        holdable.transform.localPosition = new Vector3(0, 0, 0);
-        holdable.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        holdable.transform.SetLocalPositionAndRotation(new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
+        holdable.SetAnimator(true);
     }
 
     private void UpdateHeldItemState(GameObject item)

@@ -19,40 +19,52 @@ public class IngredientDisplay : MonoBehaviour
 
         foreach ((Ingredient ingredient, float amount) in ingredients)
         {
+
+            // Determine
             string unit = "";
-            float numCups = amount / 16f;
             float finalAmount;
 
-            switch (numCups)
-            {
-                case 1f:
-                    unit = "cup";
-                    finalAmount = numCups;
-                    break;
-                case >= 1f /  4f:
-                    unit = "cups";
-                    finalAmount = numCups;
-                    break;
-                case 1f / 16f:
-                    unit = "tablespoon";
-                    finalAmount = amount;
-                    break;
-                case >= 1f / 16f:
-                    unit = "tablespoons";
-                    finalAmount = amount;
-                    break;
-                default:
-                    unit = "Unit not found";
-                    finalAmount = amount;
-                    break;
-            }
-
-            
+            ConvertUnits(amount, out unit, out finalAmount);
 
             s += "<sprite name=\"" + ingredient + "\"> x " + finalAmount + " " + unit + "<br>";
         }
 
-        print(s);
         text.text = s;
+    }
+
+    private void ConvertUnits(float amount, out string unit, out float finalAmount)
+    {
+        float numCups = amount / 16f;
+
+        switch (numCups)
+        {
+            case 1f:
+                unit = "cup";
+                finalAmount = numCups;
+                break;
+            case >= 1f / 4f:
+                unit = "cups";
+                finalAmount = numCups;
+                break;
+            case 1f / 16f:
+                unit = "tablespoon";
+                finalAmount = amount;
+                break;
+            case >= 1f / 16f:
+                unit = "tablespoons";
+                finalAmount = amount;
+                break;
+            default:
+                unit = "Unit not found";
+                finalAmount = amount;
+                break;
+        }
+    }
+
+    // Look at camera
+    private void LateUpdate()
+    {
+        transform.LookAt(Camera.main.transform);
+        transform.RotateAround(transform.position, transform.up, 180f);
     }
 }
