@@ -75,6 +75,7 @@ public class HoldAction : IAction
     {
         holdable.transform.parent = holder.equipPosition;
         holdable.transform.localPosition = new Vector3(0, 0, 0);
+        holdable.transform.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
     private void UpdateHeldItemState(GameObject item)

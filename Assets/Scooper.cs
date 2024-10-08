@@ -7,6 +7,9 @@ public class Scooper : Interactable
     [SerializeField]
     private float _capacity;
 
+    [SerializeField]
+    public Animator _animator;
+
     public float capacity
     {
         get { return _capacity; }
@@ -23,6 +26,8 @@ public class Scooper : Interactable
     public void MakeEmpty()
     {
         _ingredient = Ingredient.None;
+
+        _animator.SetBool("Fill", false);
     }
 
     public void Fill(Ingredient i)
@@ -33,5 +38,7 @@ public class Scooper : Interactable
         }
 
         _ingredient = i;
+
+        _animator.SetBool("Fill", true);
     }
 }
