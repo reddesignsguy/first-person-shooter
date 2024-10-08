@@ -15,13 +15,41 @@ public class IngredientDisplay : MonoBehaviour
 
     public void UpdateText(Dictionary<Ingredient, float> ingredients)
     {
-        text.text = "testing from script";
         string s = "";
 
         foreach ((Ingredient ingredient, float amount) in ingredients)
         {
+            string unit = "";
+            float numCups = amount / 16f;
+            float finalAmount;
 
-            s += "<sprite=" + ingredient + "> x " + amount + " cup<br>";
+            switch (numCups)
+            {
+                case 1f:
+                    unit = "cup";
+                    finalAmount = numCups;
+                    break;
+                case >= 1f /  4f:
+                    unit = "cups";
+                    finalAmount = numCups;
+                    break;
+                case 1f / 16f:
+                    unit = "tablespoon";
+                    finalAmount = amount;
+                    break;
+                case >= 1f / 16f:
+                    unit = "tablespoons";
+                    finalAmount = amount;
+                    break;
+                default:
+                    unit = "Unit not found";
+                    finalAmount = amount;
+                    break;
+            }
+
+            
+
+            s += "<sprite name=\"" + ingredient + "\"> x " + finalAmount + " " + unit + "<br>";
         }
 
         print(s);

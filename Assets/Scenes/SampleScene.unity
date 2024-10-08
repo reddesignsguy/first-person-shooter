@@ -1563,7 +1563,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
       propertyPath: m_text
-      value: <sprite=0> x 1 cup
+      value: <sprite name="Sugar"> x 1 cup
       objectReference: {fileID: 0}
     - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
       propertyPath: m_fontSize
@@ -1583,11 +1583,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
       propertyPath: m_fontStyle
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
+      propertyPath: m_spriteAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 14ac75db776ff45bba107a735306eb25, type: 2}
     - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
       propertyPath: m_fontSizeBase
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
+      propertyPath: m_isRightToLeft
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1019821352290811886, guid: 50a4e54597c5e4fa89dcca3460fa9131, type: 3}
       propertyPath: m_enableAutoSizing
@@ -1859,6 +1867,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 28152942}
+    - target: {fileID: 7923123780387877335, guid: 533427841845d4aa29b49cb8d14ef7e0, type: 3}
+      propertyPath: _capacity
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 8294326214959399661, guid: 533427841845d4aa29b49cb8d14ef7e0, type: 3}
       propertyPath: m_Name
       value: Particle
