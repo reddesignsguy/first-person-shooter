@@ -21,14 +21,14 @@ public class ActionManager : MonoBehaviour
 
     private GameObject lastItemHeld;
     private GameObject lastItemLookingAt;
-    public List<IAction> actions { get; private set; } // TODO - replace with action data
+    public Dictionary<KeyCode, IAction> actions { get; private set; } // TODO - replace with action data
 
     // TODO -- in the works
     List<ActionData> actionData;
 
     private void Awake()
     {
-        actions = new List<IAction>();
+        actions = new Dictionary<KeyCode, IAction>();
         actionData = new List<ActionData>();
     }
 
@@ -44,16 +44,14 @@ public class ActionManager : MonoBehaviour
         lastItemLookingAt = ItemContext.Instance._itemLookingAt;
     }
 
-    public void ExecuteAction(int actionIndex)
+    public void ExecuteAction(KeyCode code)
     {
-        if (actions.Count <= actionIndex)
+        if (actions.TryGetValue(code, out IAction action))
         {
-            return;
-        }
-
-        GameObject itemHeld = ItemContext.Instance._itemHeld;
-        GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
-        actions[actionIndex].Execute(itemHeld, itemLookingAt);
+            GameObject itemHeld = ItemContext.Instance._itemHeld;
+            GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
+            action.Execute(itemHeld, itemLookingAt);
+            }
     }
 
     /*
@@ -63,35 +61,39 @@ public class ActionManager : MonoBehaviour
      * pair of items in the context of gameplay design, however, because all actions check if the components needed are present in the ItemContext,
      * incorrect action assignments will not lead to run-time errors.
      */
-    private List<IAction> GetAvailableActions()
+    private Dictionary<KeyCode, IAction> GetAvailableActions()
     {
         //List<IAction> commands = new List<IAction>();
 
         Dictionary<KeyCode, IAction> commands = new Dictionary<KeyCode, IAction>();
 
 
-        if (AreComponentsPresent<Scooper, FoodSource>())
+        // TODO -- refactor
+        // All actions that can be assigned to E
+        KeyCode keyCode = KeyCode.E;
+        if (IsHolding<Scooper>())
         {
-            commands.Add(new ScoopAction()); // E 
+            if (IsLookingAt<FoodSource>())
+            {
+                commands[keyCode] = new ScoopAction();
+            }
+            else if (IsLookingAt<IngredientReceiver>())
+            {
+                commands[keyCode] = new PourAction();
+            }
+        }
+        else if (IsHandEmpty() && IsLookingAt<Holdable>())
+        {
+            commands[keyCode] = new HoldAction();
         }
 
-        if (AreComponentsPresent<Scooper, IngredientReceiver>())
-        {
-            commands.Add(new PourAction()); // E 
-        }
-
-        if (IsHandEmpty() && IsLookingAt<Holdable>())
-        {
-            commands.Add(new HoldAction()); // E
-        }
-
+        // All actions that can be assigned to left mouse button
+        keyCode = KeyCode.Mouse0;
         if (IsLookingAt<Toggleable>())
         {
-            commands.Add(new ToggleAction()); // Left
+            commands[keyCode] = new ToggleAction(); 
         }
 
-        foreach (IAction command in commands)
-            Debug.Log(command);
 
         return commands;
     }
