@@ -65,26 +65,28 @@ public class ActionManager : MonoBehaviour
      */
     private List<IAction> GetAvailableActions()
     {
-        List<IAction> commands = new List<IAction>();
+        //List<IAction> commands = new List<IAction>();
+
+        Dictionary<KeyCode, IAction> commands = new Dictionary<KeyCode, IAction>();
 
         if (AreComponentsPresent<Scooper, FoodSource>())
         {
-            commands.Add(new ScoopAction());
+            commands.Add(new ScoopAction()); // E 
         }
 
         if (AreComponentsPresent<Scooper, IngredientReceiver>())
         {
-            commands.Add(new PourAction());
+            commands.Add(new PourAction()); // E 
         }
 
         if (IsHandEmpty() && IsComponentPresentInItemLookingAt<Holdable>())
         {
-            commands.Add(new HoldAction());
+            commands.Add(new HoldAction()); // E
         }
 
         if (IsComponentPresentInItemLookingAt<Toggleable>())
         {
-            commands.Add(new ToggleAction());
+            commands.Add(new ToggleAction()); // Left
         }
 
         foreach (IAction command in commands)
@@ -110,6 +112,15 @@ public class ActionManager : MonoBehaviour
 
         return itemLookingAt != null && itemLookingAt.TryGetComponent(out T1 _);
     }
+
+    private bool IsHolding<T1>()
+    where T1 : Component
+    {
+        GameObject itemHeld = ItemContext.Instance._itemHeld;
+
+        return itemHeld != null && itemHeld.TryGetComponent(out T1 _);
+    }
+
 
     private bool IsHandEmpty()
     {
