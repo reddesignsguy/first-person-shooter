@@ -69,6 +69,7 @@ public class ActionManager : MonoBehaviour
 
         Dictionary<KeyCode, IAction> commands = new Dictionary<KeyCode, IAction>();
 
+
         if (AreComponentsPresent<Scooper, FoodSource>())
         {
             commands.Add(new ScoopAction()); // E 
@@ -79,12 +80,12 @@ public class ActionManager : MonoBehaviour
             commands.Add(new PourAction()); // E 
         }
 
-        if (IsHandEmpty() && IsComponentPresentInItemLookingAt<Holdable>())
+        if (IsHandEmpty() && IsLookingAt<Holdable>())
         {
             commands.Add(new HoldAction()); // E
         }
 
-        if (IsComponentPresentInItemLookingAt<Toggleable>())
+        if (IsLookingAt<Toggleable>())
         {
             commands.Add(new ToggleAction()); // Left
         }
@@ -105,7 +106,7 @@ public class ActionManager : MonoBehaviour
         return itemHeld != null && itemHeld.TryGetComponent(out T1 _) && itemLookingAt != null && itemLookingAt.TryGetComponent(out T2 _);
     }
 
-    private bool IsComponentPresentInItemLookingAt<T1>()
+    private bool IsLookingAt<T1>()
         where T1 : Component
     {
         GameObject itemLookingAt = ItemContext.Instance._itemLookingAt;
