@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mixer : Toggleable
+public class MixerToggle : Toggleable
 {
     public override void Toggle()
     {

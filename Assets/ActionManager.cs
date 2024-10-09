@@ -87,6 +87,9 @@ public class ActionManager : MonoBehaviour
             commands.Add(new ToggleAction());
         }
 
+        foreach (IAction command in commands)
+            Debug.Log(command);
+
         return commands;
     }
 
