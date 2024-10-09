@@ -96,8 +96,8 @@ public class ActionManager : MonoBehaviour
 
         foreach(var pair in commands)
         {
-            print(pair.Key);
-            print(pair.Value);
+            Debug.Log(pair.Key);
+            Debug.Log(pair.Value);
         }
 
         return commands;
