@@ -82,6 +82,11 @@ public class ActionManager : MonoBehaviour
             commands.Add(new HoldAction());
         }
 
+        if (IsComponentPresentInItemLookingAt<Toggleable>())
+        {
+            commands.Add(new ToggleAction());
+        }
+
         return commands;
     }
 

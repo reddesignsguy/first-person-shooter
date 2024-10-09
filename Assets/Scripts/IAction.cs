@@ -83,3 +83,13 @@ public class HoldAction : IAction
         ItemContext.Instance._itemHeld = item;
     }
 }
+
+public class ToggleAction : IAction
+{
+    public override void Execute(GameObject item1, GameObject item2)
+    {
+        if (item2.TryGetComponent(out Toggleable toggleable)) {
+            toggleable.Toggle();
+        }
+    }
+}

@@ -59,7 +59,7 @@ public class InputManager : MonoBehaviour
 }
 
 
-public class Interactable : MonoBehaviour
+public abstract class Interactable : MonoBehaviour
 {
     
 }
