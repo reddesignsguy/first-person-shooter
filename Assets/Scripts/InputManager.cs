@@ -18,7 +18,7 @@ public class InputManager : MonoBehaviour
     {
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
-        motor = GetComponent <PlayerMotor>();
+        motor = GetComponent<PlayerMotor>();
         _look = GetComponent<PlayerLook>();
         actionManager = GetComponent<ActionManager>();
 
@@ -41,9 +41,16 @@ public class InputManager : MonoBehaviour
         Vector2 lookDir = onFoot.Look.ReadValue<Vector2>();
         _look.ProcessLook(lookDir);
 
-        if (Input.GetKey(KeyCode.E))
+
+        // TODO -- Refactor
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            actionManager.ExecuteAction(0);
+            actionManager.ExecuteAction(KeyCode.E);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            actionManager.ExecuteAction(KeyCode.Mouse0);
         }
     }
 

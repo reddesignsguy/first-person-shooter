@@ -66,11 +66,11 @@ public class ActionManager : MonoBehaviour
         //List<IAction> commands = new List<IAction>();
 
         Dictionary<KeyCode, IAction> commands = new Dictionary<KeyCode, IAction>();
-
+        KeyCode keyCode;
 
         // TODO -- refactor
         // All actions that can be assigned to E
-        KeyCode keyCode = KeyCode.E;
+        keyCode = KeyCode.E;
         if (IsHolding<Scooper>())
         {
             if (IsLookingAt<FoodSource>())
@@ -94,6 +94,11 @@ public class ActionManager : MonoBehaviour
             commands[keyCode] = new ToggleAction(); 
         }
 
+        foreach(var pair in commands)
+        {
+            print(pair.Key);
+            print(pair.Value);
+        }
 
         return commands;
     }
